@@ -1,0 +1,3 @@
+#!/bin/bash -u
+
+# Nothing to do. Routes will disappear automatically on removal of the ppp interface.

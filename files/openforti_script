@@ -1,0 +1,28 @@
+#!/bin/bash -u
+
+script_name=$(basename -- "$0")
+pid=(`pgrep -f $script_name`)
+pid_count=${#pid[@]}
+
+[[ -z $pid ]] && echo "Failed to get the PID"
+
+if [ -f "/var/run/$script_name" ];then
+   if [[  $pid_count -gt "1" ]];then
+      echo "An another instance of this script is already running, please clear all the sessions of this script before starting a new session"
+      exit 1
+   else
+      echo "Looks like the last instance of this script exited unsuccessfully, perform cleanup"
+      rm -f "/var/run/$script_name"
+   fi
+fi
+
+echo $pid > /var/run/$script_name
+
+# Main Function
+
+while true; do 
+    openfortivpn | ts 2>&1 >>/var/log/openfortivpn
+    sleep 10s
+done
+
+rm -f "/var/run/$script_name"

@@ -1,0 +1,95 @@
+---
+# tasks file for openfortinet_client
+
+- name: testing..
+  ansible.builtin.debug:
+      msg: "Hostname: {{hostname}}"
+
+
+- name: "Install lastest version of openfortivpn"
+  package:
+    name: "{{ openfortivpn_package }}"
+    state: latest
+  become: true
+  tags:
+    - openfortivpn_package
+
+
+- name: "Ensure config is in place"
+  become: true
+  ansible.builtin.template:
+    src: "./files/config.j2"
+    dest: "{{ openfortinet_dir }}/config"
+    # dest: '/etc/openfortivpn/config'
+    # backup: yes
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: "Ip up script"
+  become: true
+  ansible.builtin.template:
+    src: ./files/ip_up.j2
+    dest: /etc/ppp/ip-up.d/nomad
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: "Ip down script"
+  become: true
+  ansible.builtin.copy:
+    src: ./files/ip_down
+    dest: /etc/ppp/ip-down.d/nomad
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: "Script to continually ensure the VPN is running"
+  become: true
+  ansible.builtin.copy:
+    src: ./files/openforti_script
+    dest: /usr/local/bin/openforti_script
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: "Start the VPN script on reboot"
+  become: true
+  ansible.builtin.cron:
+    name: "Start, and ensure, openfortivpn runs from boot"
+    special_time: reboot
+    job: "/usr/local/bin/openforti_script"
+    user: root
+
+- name: "Create script logfile"
+  become: true
+  file:
+    path: "/var/log/openfortivpn"
+    state: touch
+    mode: "0644"
+    owner: "root"
+    group: "root"
+
+
+- name: "Create logrotate config file"
+  become: true
+  file:
+    path: "/etc/logrotate.d/openfortivpn"
+    state: touch
+    mode: "0644"
+    owner: "root"
+    group: "root"
+
+- name: "Add config block to logrotate config file"
+  become: true
+  blockinfile:
+    path: "/etc/logrotate.d/openfortivpn"
+    block: |
+      /var/log/openfortivpn {
+        rotate 7
+        daily
+        notifempty
+        missingok
+        compress
+        delaycompress
+      }

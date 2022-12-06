@@ -1,0 +1,7 @@
+---
+# vars file for openfortinet_client
+openfortivpn_package: openfortivpn
+
+openfortivpn_version: 1.17.1
+
+openfortinet_dir: /etc/openfortivpn

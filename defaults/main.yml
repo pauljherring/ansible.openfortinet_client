@@ -1,0 +1,16 @@
+openfortivpn_user: user.name
+openfortivpn_pass: passw0rd
+openfortivpn_trusted_cert: 364e231cdd9cfbb84dee272a3dc4a88ba2d26aeaac77a07c9aefc1972e0dc52b
+openfortinet_host: 10.0.0.8
+openfortinet_port: 443
+
+openfortinet_routes: "10.0.0.0/8 172.16.0.0/16 172.18.0.0/15 172.20.0.0/14 172.24.0.0/13  185.201.60.0/24"
+# don't send 172.17.0.0/16 over the network - leave for docker:
+# /etc/docker/daemon.json
+# {
+#  "default-address-pools":
+#  [
+#    {"base":"172.17.0.0/16","size":24}
+#  ]
+#}
+# 185.201.60.59 is ipam.nomadrail.com

@@ -1,0 +1,46 @@
+#!/bin/bash -u
+
+# Parameters in (logger "${@}"), example:
+# ppp0 /dev/pts/1 38400 172.20.5.3 192.0.2.1
+
+# Environment (logger "$(set)"), example
+# DEVICE=/dev/pts/1
+# IFNAME=ppp0
+# IPLOCAL=172.20.5.3
+# IPREMOTE=192.0.2.1
+# PPPD_PID=6108
+# PPPLOGNAME=pherring
+# PPP_IFACE=ppp0
+# PPP_IPPARAM=
+# PPP_LOCAL=172.20.5.3
+# PPP_REMOTE=192.0.2.1
+# PPP_SPEED=38400
+# PPP_TTY=/dev/pts/1
+# PPP_TTYNAME=1
+# ORIG_UID=0
+
+# Which routes /do/ we want going over the office VPN?
+# RFC1819.
+routes="{{openfortinet_routes}}"
+#
+# Your home router would typically have carved out a more specific
+# range from 192.168.0.0/16 (normally a /24) which will override
+# part of the above, so you can still talk to things at home.
+# Only a problem if your home network clashes with something in the
+# office, where you won't be able to access that part of the
+# office range.
+
+# e.g. the last two lines here:
+# pherring@pherring-Aspire-ES1-533:~/unison$ ip route
+# default via 192.168.0.1 dev wlp2s0 metric 21569
+# 10.0.0.0/8 dev ppp0 scope link
+# 172.16.0.0/12 dev ppp0 scope link
+# 192.168.0.0/24 dev wlp2s0 proto kernel scope link src 192.168.0.19 metric 600
+# 192.168.0.0/16 dev ppp0 scope link
+
+for route in $routes; do
+    logger "ip route add $route dev $IFNAME"
+    ip route add $route dev $IFNAME
+done
+
+

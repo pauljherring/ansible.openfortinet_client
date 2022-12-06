@@ -1,0 +1,20 @@
+# where?
+host = 78.33.59.99
+port = 443
+
+# who? See desktop support (at the time of writing) for credentials
+username = {{openfortivpn_user}}
+password = {{openfortivpn_pass}}
+
+# Don't want office DNS
+set-dns = 0
+
+# We don't necessarily want to route *everything* through the tunnel (set to 1 if you do)
+# See /etc/ppp/ip-up.d/nomad for what we /do/ want routing if you have this at 0
+set-routes = 0
+
+# Still not interested in office dns
+pppd-use-peerdns = 0
+
+# Stop it complaining
+trusted-cert = {{openfortivpn_trusted_cert}}
