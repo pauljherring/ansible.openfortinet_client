@@ -86,6 +86,8 @@
     path: "/etc/logrotate.d/openfortivpn"
     block: |
       /var/log/openfortivpn {
+        su root root
+        create 0644 root root
         rotate 7
         daily
         notifempty
