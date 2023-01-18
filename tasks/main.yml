@@ -1,11 +1,6 @@
 ---
 # tasks file for openfortinet_client
 
-- name: testing..
-  ansible.builtin.debug:
-      msg: "Hostname: {{hostname}}"
-
-
 - name: "Install lastest version of openfortivpn"
   package:
     name: "{{ openfortivpn_package }}"
